@@ -1,4 +1,5 @@
-import { cronExpressionParser, limits } from '../../app/cronExpressionParser';
+import { cronExpressionParser } from '../../app/cronExpressionParser';
+import { limits } from '../../app/parseCronValue';
 
 describe('Cron Expression Parser valid fields', () => {
   it('should throw if cron field is missing', async (done) => {
