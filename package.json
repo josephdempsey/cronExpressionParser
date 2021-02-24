@@ -1,0 +1,73 @@
+{
+  "name": "cronexpressionparser",
+  "version": "1.0.0",
+  "description": "parse cron expressions",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint:eslint && npm run test:unit",
+    "lint:eslint": "eslint --ext .ts .",
+    "fix": "eslint --ext .ts . --fix",
+    "test:unit": "LOG_LEVEL=silent jest test/unit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "command-line-args": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/command-line-args": "^5.0.0",
+    "@types/jest": "^26.0.20",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.5",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/test",
+      "<rootDir>/app"
+    ],
+    "testEnvironment": "node",
+    "projects": [
+      {
+        "displayName": "Unit",
+        "testMatch": [
+          "<rootDir>/test/unit/**/*.spec.(js|ts)"
+        ],
+        "transform": {
+          "^.+\\.tsx?$": "ts-jest"
+        },
+        "setupFilesAfterEnv": [
+          "jest-extended"
+        ]
+      },
+      {
+        "displayName": "Integration",
+        "testMatch": [
+          "<rootDir>/test/integration/**/*.spec.ts"
+        ],
+        "transform": {
+          "^.+\\.tsx?$": "ts-jest"
+        },
+        "setupFilesAfterEnv": [
+          "./node_modules/jest-xml-matcher/index.js"
+        ],
+        "moduleFileExtensions": [
+          "js",
+          "json",
+          "jsx",
+          "ts",
+          "tsx",
+          "node",
+          "feature"
+        ]
+      }
+    ]
+  }
+}

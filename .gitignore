@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Target folder
+target/
+
+# IDE
+.vscode
+
+# localstack data
+.localstack/
+
+# serverless data
+.serverless/
+.build/
