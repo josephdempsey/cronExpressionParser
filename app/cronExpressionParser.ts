@@ -21,11 +21,15 @@ export const limits = {
   },
 };
 
-const parseMinute = (cronValue: string) => {
+type TimeMetricType = 'minute'| 'hour'| 'dayOfTheMonth' | 'month' | 'dayOfTheWeek';
+
+const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
   const minuteResult = [];
+  const minValue = limits[timeMetric].min;
+  const maxValue = limits[timeMetric].max;
 
   if (cronValue === '*') {
-    for (let i = limits.minute.min; i <= limits.minute.max; i++) {
+    for (let i = minValue; i <= maxValue; i++) {
       minuteResult.push(i);
     }
 
@@ -40,8 +44,8 @@ const parseMinute = (cronValue: string) => {
       const parsedMinRange = parseInt(range[0], 10);
       const parsedMaxRange = parseInt(range[1], 10);
 
-      if ((parsedMinRange < limits.minute.min || parsedMinRange > limits.minute.max)
-                || (parsedMaxRange < limits.minute.min || parsedMaxRange > limits.minute.max)) {
+      if ((parsedMinRange < minValue || parsedMinRange > maxValue)
+                || (parsedMaxRange < minValue || parsedMaxRange > maxValue)) {
         throw new Error(`Invalid range: ${range}`);
       }
 
@@ -61,7 +65,7 @@ const parseMinute = (cronValue: string) => {
         throw new Error(`Invalid step value: ${stepValue}`);
       }
 
-      for (let i = limits.minute.min; i <= limits.minute.max; i++) {
+      for (let i = minValue; i <= maxValue; i++) {
         if (i % parsedStepValue === 0) {
           minuteResult.push(i);
         }
@@ -79,8 +83,8 @@ const parseMinute = (cronValue: string) => {
         const parsedMinRange = parseInt(range[0], 10);
         const parsedMaxRange = parseInt(range[1], 10);
 
-        if ((parsedMinRange < limits.minute.min || parsedMinRange > limits.minute.max)
-                    || (parsedMaxRange < limits.minute.min || parsedMaxRange > limits.minute.max)) {
+        if ((parsedMinRange < minValue || parsedMinRange > maxValue)
+                    || (parsedMaxRange < minValue || parsedMaxRange > maxValue)) {
           throw new Error(`Invalid range: ${range}`);
         }
 
@@ -101,7 +105,7 @@ const parseMinute = (cronValue: string) => {
           throw new Error(`Invalid step value: ${stepValue}`);
         }
 
-        for (let i = limits.minute.min; i <= limits.minute.max; i++) {
+        for (let i = minValue; i <= maxValue; i++) {
           if (i % parsedStepValue === 0) {
             minuteResult.push(i);
           }
@@ -116,7 +120,7 @@ const parseMinute = (cronValue: string) => {
             minuteResult.push(parsedMinute);
             continue;
       }
-      throw new Error(`Invalid minute value: ${parsedMinute}`);
+      throw new Error(`Invalid ${timeMetric} value: ${parsedMinute}`);
     }
 
     return minuteResult;
@@ -127,7 +131,7 @@ const parseMinute = (cronValue: string) => {
   if (!Number.isNaN(parsedMinute) && Math.sign(parsedMinute) !== -1) {
     return minuteResult.push(parsedMinute);
   }
-  throw new Error(`Invalid minute value: ${parsedMinute}`);
+  throw new Error(`Invalid ${timeMetric} value: ${parsedMinute}`);
 };
 
 export const cronExpressionParser = (input: string) => {
@@ -138,10 +142,10 @@ export const cronExpressionParser = (input: string) => {
   }
 
   const cronCommandDetails = {
-    minute: parseMinute(commands[0]),
-    hour: commands[1],
+    minute: parseMinuteHour(commands[0], 'minute'),
+    hour: parseMinuteHour(commands[1], 'hour'),
     dayOfTheMonth: commands[2],
-    month: commands[3],
+    month: parseMinuteHour(commands[3], 'month'),
     dayOfTheWeek: commands[4],
     commandToRun: [commands[5]],
   };
