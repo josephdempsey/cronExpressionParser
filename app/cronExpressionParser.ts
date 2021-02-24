@@ -23,14 +23,14 @@ export const limits = {
 
 type TimeMetricType = 'minute'| 'hour'| 'dayOfTheMonth' | 'month' | 'dayOfTheWeek';
 
-const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
-  const minuteResult = [];
+const parseCronValue = (cronValue: string, timeMetric: TimeMetricType) => {
+  const minuteResult: { [ key: number ]: number } = {};
   const minValue = limits[timeMetric].min;
   const maxValue = limits[timeMetric].max;
 
   if (cronValue === '*') {
     for (let i = minValue; i <= maxValue; i++) {
-      minuteResult.push(i);
+      minuteResult[i] = i;
     }
 
     return minuteResult;
@@ -50,7 +50,7 @@ const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
       }
 
       for (let i = parsedMinRange; i <= parsedMaxRange; i++) {
-        minuteResult.push(i);
+        minuteResult[i] = i;
       }
 
       return minuteResult;
@@ -67,7 +67,7 @@ const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
 
       for (let i = minValue; i <= maxValue; i++) {
         if (i % parsedStepValue === 0) {
-          minuteResult.push(i);
+          minuteResult[i] = i;
         }
       }
 
@@ -89,7 +89,7 @@ const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
         }
 
         for (let i = parsedMinRange; i <= parsedMaxRange; i++) {
-          minuteResult.push(i);
+          minuteResult[i] = i;
         }
 
         continue;
@@ -107,7 +107,7 @@ const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
 
         for (let i = minValue; i <= maxValue; i++) {
           if (i % parsedStepValue === 0) {
-            minuteResult.push(i);
+            minuteResult[i] = i;
           }
         }
 
@@ -117,7 +117,7 @@ const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
       const parsedMinute = parseInt(values[i], 10);
 
       if (!Number.isNaN(parsedMinute) && Math.sign(parsedMinute) !== -1) {
-            minuteResult.push(parsedMinute);
+            minuteResult[parsedMinute] = parsedMinute;
             continue;
       }
       throw new Error(`Invalid ${timeMetric} value: ${parsedMinute}`);
@@ -129,7 +129,7 @@ const parseMinuteHour = (cronValue: string, timeMetric: TimeMetricType) => {
   const parsedMinute = parseInt(cronValue, 10);
 
   if (!Number.isNaN(parsedMinute) && Math.sign(parsedMinute) !== -1) {
-    return minuteResult.push(parsedMinute);
+    return minuteResult[parsedMinute] = parsedMinute;
   }
   throw new Error(`Invalid ${timeMetric} value: ${parsedMinute}`);
 };
@@ -142,11 +142,11 @@ export const cronExpressionParser = (input: string) => {
   }
 
   const cronCommandDetails = {
-    minute: parseMinuteHour(commands[0], 'minute'),
-    hour: parseMinuteHour(commands[1], 'hour'),
-    dayOfTheMonth: commands[2],
-    month: parseMinuteHour(commands[3], 'month'),
-    dayOfTheWeek: commands[4],
+    minute: parseCronValue(commands[0], 'minute'),
+    hour: parseCronValue(commands[1], 'hour'),
+    dayOfTheMonth: parseCronValue(commands[2], 'dayOfTheMonth'),
+    month: parseCronValue(commands[3], 'month'),
+    dayOfTheWeek: parseCronValue(commands[4], 'dayOfTheWeek'),
     commandToRun: [commands[5]],
   };
 
